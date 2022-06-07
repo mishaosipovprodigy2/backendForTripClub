@@ -5,6 +5,11 @@ var bcrypt = require("bcryptjs");
 const _ = require("lodash");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+
+router.get("/", async (req, res) => {
+  let users = await User.find();
+  return res.send(users);
+});
 router.post("/register", async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
   if (user) return res.status(400).send("User with given Email already exist");

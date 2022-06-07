@@ -17,24 +17,25 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     let trip = await Trip.findById(req.params.id);
-    if (!trip)
-      return res.status(400).send("Trip With given ID is not present"); //when id is not present id db
+    if (!trip) return res.status(400).send("Trip With given ID is not present"); //when id is not present id db
     return res.send(trip); //everything is ok
   } catch (err) {
     return res.status(400).send("Invalid ID"); // format of id is not correct
   }
 });
 //update a record
-router.put("/:id", validateTrip, async (req, res) => {
+router.put("/:id", async (req, res) => {
   let trip = await Trip.findById(req.params.id);
   trip.place = req.body.place;
   trip.price = req.body.price;
-  trip.days=req.body.days
+  trip.days = req.body.days;
+  trip.createdById = trip.createdById;
+  trip.createdByName = trip.createdByName;
   await trip.save();
   return res.send(trip);
 });
-//update a record
-router.delete("/:id", auth, admin, async (req, res) => {
+//delete a record
+router.delete("/:id", async (req, res) => {
   let trip = await Trip.findByIdAndDelete(req.params.id);
   return res.send(trip);
 });
@@ -44,6 +45,10 @@ router.post("/", validateTrip, async (req, res) => {
   trip.place = req.body.place;
   trip.price = req.body.price;
   trip.days = req.body.days;
+  trip.createdById = req.body.createdById;
+  trip.createdByName = req.body.createdByName;
+  trip.startingDate = req.body.startingDate;
+  trip.endingDate = req.body.endingDate;
   await trip.save();
   return res.send(trip);
 });
